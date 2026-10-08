@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Pulse</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="page-header">
+    <h1 class="page-title">Project Pulse</h1>
+    <p class="page-subtitle">Track project health, owners, recent updates, and delivery priorities in one focused dashboard.</p>
+  </header>
+
+  <main id="dashboard" class="dashboard" aria-live="polite" aria-busy="true"></main>
+
+  <script>
+    const dashboard = document.getElementById("dashboard");
+
+    const statusClasses = {
+      "Active": "active",
+      "Blocked": "blocked",
+      "In Review": "review",
+      "Done": "done"
+    };
+
+    const priorityClasses = {
+      "High": "high",
+      "Medium": "medium",
+      "Low": "low"
+    };
+
+    function getTextValue(value, fallbackText) {
+      if (typeof value !== "string") {
+        return fallbackText;
+      }
+
+      const trimmedValue = value.trim();
+      return trimmedValue.length > 0 ? trimmedValue : fallbackText;
+    }
+
+    function createMessage(message, isError) {
+      const messageElement = document.createElement("p");
+      messageElement.classList.add("dashboard-message");
+
+      if (isError) {
+        messageElement.classList.add("dashboard-message--error");
+      }
+
+      messageElement.textContent = message;
+      return messageElement;
+    }
+
+    function createProjectCard(project) {
+      const projectData = project && typeof project === "object" ? project : {};
+
+      const name = getTextValue(projectData.name, "Untitled project");
+      const owner = getTextValue(projectData.owner, "Owner unavailable");
+      const status = getTextValue(projectData.status, "Unknown");
+      const recentActivity = getTextValue(projectData.recentActivity, "No recent activity reported.");
+      const priority = getTextValue(projectData.priority, "Unknown");
+
+      const statusModifier = statusClasses[status] || "unknown";
+      const priorityModifier = priorityClasses[priority] || "unknown";
+
+      const card = document.createElement("article");
+      card.classList.add("project-card");
+
+      const nameElement = document.createElement("h2");
+      nameElement.classList.add("project-name");
+      nameElement.textContent = name;
+
+      const ownerElement = document.createElement("p");
+      ownerElement.classList.add("project-owner");
+      ownerElement.textContent = `Owner: ${owner}`;
+
+      const metaElement = document.createElement("div");
+      metaElement.classList.add("card-meta");
+
+      const statusElement = document.createElement("span");
+      statusElement.classList.add("status-badge", `status--${statusModifier}`);
+      statusElement.textContent = `Status: ${status}`;
+
+      const priorityElement = document.createElement("span");
+      priorityElement.classList.add("priority", `priority--${priorityModifier}`);
+      priorityElement.textContent = `Priority: ${priority}`;
+
+      const activityElement = document.createElement("p");
+      activityElement.classList.add("project-activity");
+      activityElement.textContent = recentActivity;
+
+      metaElement.append(statusElement, priorityElement);
+      card.append(nameElement, ownerElement, metaElement, activityElement);
+
+      return card;
+    }
+
+    function renderProjects(projects) {
+      dashboard.replaceChildren();
+
+      if (!Array.isArray(projects) || projects.length === 0) {
+        dashboard.append(createMessage("No Project Pulse updates are available yet.", false));
+        return;
+      }
+
+      const fragment = document.createDocumentFragment();
+
+      projects.forEach((project) => {
+        fragment.append(createProjectCard(project));
+      });
+
+      dashboard.append(fragment);
+    }
+
+    async function loadProjects() {
+      dashboard.append(createMessage("Loading Project Pulse updates...", false));
+
+      try {
+        const response = await fetch("project-data.json");
+
+        if (!response.ok) {
+          throw new Error(`Request failed with status ${response.status}`);
+        }
+
+        const data = await response.json();
+        renderProjects(data.projects);
+      } catch (error) {
+        dashboard.replaceChildren(
+          createMessage("Project Pulse data could not be loaded. Please start the dashboard from the app folder and try again.", true)
+        );
+      } finally {
+        dashboard.setAttribute("aria-busy", "false");
+      }
+    }
+
+    loadProjects();
+  </script>
+</body>
+</html>

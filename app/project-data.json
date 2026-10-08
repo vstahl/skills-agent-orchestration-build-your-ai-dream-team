@@ -1,0 +1,39 @@
+{
+  "projects": [
+    {
+      "name": "Pulse Insights Rollout",
+      "owner": "Mona Kane",
+      "status": "Active",
+      "recentActivity": "Dashboard telemetry widgets were connected to the weekly health signal feed.",
+      "priority": "High"
+    },
+    {
+      "name": "Signal Sync Automation",
+      "owner": "Priya Shah",
+      "status": "In Review",
+      "recentActivity": "The agent handoff checklist is ready for stakeholder review before the next sprint.",
+      "priority": "Medium"
+    },
+    {
+      "name": "Roadmap Risk Radar",
+      "owner": "Theo Martinez",
+      "status": "Blocked",
+      "recentActivity": "Waiting on dependency mapping from the integrations team before risk scoring can resume.",
+      "priority": "High"
+    },
+    {
+      "name": "Team Capacity Lens",
+      "owner": "Avery Chen",
+      "status": "Active",
+      "recentActivity": "Capacity trends were refreshed with the latest planning data and flagged for review.",
+      "priority": "Medium"
+    },
+    {
+      "name": "Launch Readiness Snapshot",
+      "owner": "Sam Rivera",
+      "status": "Done",
+      "recentActivity": "Final launch notes were published and archived in the Project Pulse workspace.",
+      "priority": "Low"
+    }
+  ]
+}

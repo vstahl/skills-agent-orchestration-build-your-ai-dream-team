@@ -1,0 +1,479 @@
+/**
+ * Project Pulse Dashboard Stylesheet
+ * 
+ * Accessible, responsive, high-contrast styling for the Project Pulse dashboard.
+ * Conforms to the markup contract emitted by the dashboard frontend.
+ */
+
+/* ==========================================================================
+   CSS Custom Properties (Design Tokens)
+   ========================================================================== */
+
+:root {
+  /* Color Palette - Canvas & Surfaces */
+  --color-bg: #f8fafc;
+  --color-surface: #ffffff;
+  --color-surface-hover: #fafcfd;
+  --color-border: #e2e8f0;
+  --color-border-hover: #cbd5e1;
+
+  /* Typography Colors */
+  --color-text-heading: #0f172a;
+  --color-text-body: #334155;
+  --color-text-muted: #64748b;
+
+  /* Brand / Accent Colors */
+  --color-brand-primary: #0284c7;
+  --color-brand-accent: #0ea5e9;
+  --color-focus: #2563eb;
+
+  /* Status Colors (WCAG AA Compliant contrast against their badge backgrounds) */
+  --status-active-bg: #dcfce7;
+  --status-active-text: #166534;
+  --status-active-border: #bbf7d0;
+
+  --status-review-bg: #fef3c7;
+  --status-review-text: #92400e;
+  --status-review-border: #fde68a;
+
+  --status-blocked-bg: #fee2e2;
+  --status-blocked-text: #991b1b;
+  --status-blocked-border: #fecaca;
+
+  --status-done-bg: #e0e7ff;
+  --status-done-text: #3730a3;
+  --status-done-border: #c7d2fe;
+
+  --status-unknown-bg: #f1f5f9;
+  --status-unknown-text: #334155;
+  --status-unknown-border: #cbd5e1;
+
+  /* Priority Colors & Accents */
+  --priority-high-bg: #fff1f2;
+  --priority-high-text: #9f1239;
+  --priority-high-border: #fecdd3;
+
+  --priority-medium-bg: #fffbeb;
+  --priority-medium-text: #854d0e;
+  --priority-medium-border: #fde68a;
+
+  --priority-low-bg: #f0fdf4;
+  --priority-low-text: #166534;
+  --priority-low-border: #bbf7d0;
+
+  --priority-unknown-bg: #f8fafc;
+  --priority-unknown-text: #475569;
+  --priority-unknown-border: #e2e8f0;
+
+  /* Shadows */
+  --box-shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+  --box-shadow-card: 0 1px 3px 0 rgba(15, 23, 42, 0.08), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+  --box-shadow-card-hover: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+
+  /* Radii */
+  --border-radius-sm: 6px;
+  --border-radius-md: 10px;
+  --border-radius-card: 14px;
+  --border-radius-pill: 9999px;
+
+  /* Typography */
+  --font-family-base: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --line-height-normal: 1.5;
+  --line-height-tight: 1.25;
+}
+
+/* ==========================================================================
+   Base & Reset
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 100%;
+  -webkit-text-size-adjust: 100%;
+  background-color: var(--color-bg);
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-family-base);
+  color: var(--color-text-body);
+  background-color: var(--color-bg);
+  line-height: var(--line-height-normal);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* Accessible focus ring */
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Header: body > header.page-header
+   ========================================================================== */
+
+body > header.page-header {
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: var(--box-shadow-sm);
+  padding: 2.25rem 1.5rem 2rem;
+  width: 100%;
+}
+
+.page-header > div,
+.page-header {
+  box-sizing: border-box;
+}
+
+.page-title {
+  color: var(--color-text-heading);
+  font-size: 1.875rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: var(--line-height-tight);
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.page-title::before {
+  content: "";
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: var(--border-radius-pill);
+  background-color: var(--color-brand-primary);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.25);
+  flex-shrink: 0;
+}
+
+.page-subtitle {
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: var(--line-height-normal);
+  max-width: 1200px;
+  margin: 0.5rem auto 0;
+}
+
+/* ==========================================================================
+   Dashboard Grid: main#dashboard.dashboard
+   ========================================================================== */
+
+main#dashboard.dashboard,
+.dashboard {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+  align-items: stretch;
+  flex: 1;
+}
+
+/* ==========================================================================
+   Project Card: article.project-card
+   ========================================================================== */
+
+article.project-card,
+.project-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-card);
+  box-shadow: var(--box-shadow-card);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  position: relative;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.2s ease;
+}
+
+.project-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--box-shadow-card-hover);
+  border-color: var(--color-border-hover);
+}
+
+.project-card:focus-within {
+  border-color: var(--color-focus);
+}
+
+/* Project Card Children */
+
+.project-name {
+  color: var(--color-text-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.015em;
+  margin-bottom: 0.375rem;
+  word-break: break-word;
+}
+
+.project-owner {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  line-height: var(--line-height-normal);
+  margin-bottom: 1.125rem;
+}
+
+.project-owner::before {
+  content: "Lead: ";
+  font-weight: 500;
+  color: var(--color-text-body);
+}
+
+/* Card Meta (Status & Priority Container) */
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+/* ==========================================================================
+   Status Badges: span.status-badge
+   ========================================================================== */
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: var(--border-radius-pill);
+  border: 1px solid var(--status-unknown-border);
+  background-color: var(--status-unknown-bg);
+  color: var(--status-unknown-text);
+  white-space: nowrap;
+}
+
+/* Status indicator dot */
+.status-badge::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--border-radius-pill);
+  background-color: currentColor;
+}
+
+.status--active {
+  background-color: var(--status-active-bg);
+  color: var(--status-active-text);
+  border-color: var(--status-active-border);
+}
+
+.status--review {
+  background-color: var(--status-review-bg);
+  color: var(--status-review-text);
+  border-color: var(--status-review-border);
+}
+
+.status--blocked {
+  background-color: var(--status-blocked-bg);
+  color: var(--status-blocked-text);
+  border-color: var(--status-blocked-border);
+}
+
+.status--done {
+  background-color: var(--status-done-bg);
+  color: var(--status-done-text);
+  border-color: var(--status-done-border);
+}
+
+.status--unknown {
+  background-color: var(--status-unknown-bg);
+  color: var(--status-unknown-text);
+  border-color: var(--status-unknown-border);
+}
+
+/* ==========================================================================
+   Priority Indicators: span.priority
+   (Does not rely on color alone: includes distinct shape/symbol + visible text)
+   ========================================================================== */
+
+.priority {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--priority-unknown-border);
+  background-color: var(--priority-unknown-bg);
+  color: var(--priority-unknown-text);
+  white-space: nowrap;
+}
+
+.priority::before {
+  content: "●";
+  font-size: 0.65rem;
+  line-height: 1;
+}
+
+.priority--high {
+  background-color: var(--priority-high-bg);
+  color: var(--priority-high-text);
+  border-color: var(--priority-high-border);
+}
+
+.priority--high::before {
+  content: "▲";
+  font-size: 0.65rem;
+}
+
+.priority--medium {
+  background-color: var(--priority-medium-bg);
+  color: var(--priority-medium-text);
+  border-color: var(--priority-medium-border);
+}
+
+.priority--medium::before {
+  content: "◆";
+  font-size: 0.65rem;
+}
+
+.priority--low {
+  background-color: var(--priority-low-bg);
+  color: var(--priority-low-text);
+  border-color: var(--priority-low-border);
+}
+
+.priority--low::before {
+  content: "▼";
+  font-size: 0.65rem;
+}
+
+.priority--unknown {
+  background-color: var(--priority-unknown-bg);
+  color: var(--priority-unknown-text);
+  border-color: var(--priority-unknown-border);
+}
+
+.priority--unknown::before {
+  content: "●";
+  font-size: 0.65rem;
+}
+
+/* ==========================================================================
+   Project Activity: p.project-activity
+   ========================================================================== */
+
+.project-activity {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  line-height: 1.45;
+}
+
+.project-activity::before {
+  content: "Recent update: ";
+  font-weight: 600;
+  color: var(--color-text-body);
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* ==========================================================================
+   Empty & Error State Messages: .dashboard-message
+   ========================================================================== */
+
+.dashboard-message {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem 1.5rem;
+  background-color: var(--color-surface);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--border-radius-card);
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  line-height: var(--line-height-normal);
+  margin: 1rem 0;
+}
+
+.dashboard-message--error {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   Responsive Reflow: Narrow Screens & Mobile
+   ========================================================================== */
+
+@media (max-width: 680px) {
+  body > header.page-header {
+    padding: 1.5rem 1rem 1.25rem;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .page-subtitle {
+    font-size: 0.9375rem;
+  }
+
+  main#dashboard.dashboard,
+  .dashboard {
+    grid-template-columns: 1fr;
+    padding: 1.25rem 1rem 2rem;
+    gap: 1rem;
+  }
+
+  article.project-card,
+  .project-card {
+    padding: 1.25rem;
+  }
+}
+
+/* ==========================================================================
+   Accessibility: Prefers-Reduced-Motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .project-card:hover {
+    transform: none;
+  }
+}
